@@ -7,21 +7,21 @@ public class MainForArrays {
         String[] strings = new String[]{"A", "B", "C", "D", "E"};
         Double[] doubles = new Double[]{1.3, 2.5, 4.6, 1.89, 0.223};
 
-        ArraysExtended<Integer> arrayForInts = new ArraysExtended<>(ints);
-        ArraysExtended<String> arrayForStrings = new ArraysExtended<>(strings);
-        ArraysExtended<Double> arrayForDoubles = new ArraysExtended<>(doubles);
+        ArraysExtended<Integer> arrayForInts = new ArraysExtended<>();
+        ArraysExtended<String> arrayForStrings = new ArraysExtended<>();
+        ArraysExtended<Double> arrayForDoubles = new ArraysExtended<>();
 
-        arrayForInts.swapTwoElements(2, 4);
-        arrayForInts.printArray();
+        arrayForInts.swapTwoElements(ints, 2, 4);
+        arrayForInts.printArray(ints);
 
-        arrayForStrings.swapTwoElements(1, 3);
-        arrayForStrings.printArray();
+        arrayForStrings.swapTwoElements(strings,1, 3);
+        arrayForStrings.printArray(strings);
 
-        arrayForDoubles.swapTwoElements(3, 4);
-        arrayForDoubles.printArray();
+        arrayForDoubles.swapTwoElements(doubles, 3, 4);
+        arrayForDoubles.printArray(doubles);
 
-        System.out.println(arrayForInts.convertArrayToList());
-        System.out.println(arrayForStrings.convertArrayToList());
-        System.out.println(arrayForDoubles.convertArrayToList());
+        System.out.println(arrayForInts.convertArrayToList(ints));
+        System.out.println(arrayForStrings.convertArrayToList(strings));
+        System.out.println(arrayForDoubles.convertArrayToList(doubles));
     }
 }

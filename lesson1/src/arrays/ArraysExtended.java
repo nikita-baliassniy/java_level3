@@ -24,10 +24,14 @@ public class ArraysExtended<T> {
 
     // Метод конвертации массива в список
     public List<T> convertArrayToList() {
+        List<T> list = null;
         if (array.length != 0) {
-            return new ArrayList<>(Arrays.asList(array));
+            list = new ArrayList<>();
+            for (T t :array) {
+                list.add(t);
+            }
         }
-        return null;
+        return list;
     }
 
     public void printArray() {

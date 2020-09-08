@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="clientSide.Controller"
+            minWidth="300" minHeight="500"
+                prefHeight="500.0" prefWidth="300.0">
+
+    <VBox xmlns:fx="http://javafx.com/fxml" alignment="center">
+        <TextArea fx:id="mainTextArea" VBox.vgrow="ALWAYS" editable="false"
+                  text="Press ENTER or the 'Send' button to start" minHeight="475" minWidth="300"/>
+        <GridPane>
+            <TextField fx:id="messageTextField" onKeyPressed="#keyPressedAction" minWidth="250" maxWidth="250"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Button text="Send" onAction="#btnOneClickAction" minWidth="50" GridPane.columnIndex="2"
+                    GridPane.rowIndex="1"/>
+        </GridPane>
+    </VBox>
+</AnchorPane>

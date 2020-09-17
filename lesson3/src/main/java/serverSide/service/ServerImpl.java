@@ -1,6 +1,5 @@
 package serverSide.service;
 
-import dataBaseController.dao.UsersDAO;
 import serverSide.handlers.ClientHandler;
 import serverSide.interfaces.AuthService;
 import serverSide.interfaces.Server;
@@ -11,10 +10,15 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ServerImpl implements Server {
 
     private List<ClientHandler> clients;
     private AuthService authService;
+    public static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
+
 
     public ServerImpl() {
         try {
@@ -23,13 +27,13 @@ public class ServerImpl implements Server {
             authService.start();
             clients = new LinkedList<>();
             while (true) {
-                System.out.println("Waiting for clients");
+                LOGGER.info("WAITING FOR CLIENTS");
                 Socket socket = serverSocket.accept();
-                System.out.println("Client joined");
+                LOGGER.info("A CLIENT HAS JOINED THE SERVER");
                 new ClientHandler(this, socket);
             }
         } catch (IOException e) {
-            System.out.println("Problem with server");
+            LOGGER.error("THERE IS A PROBLEM WITH THE SERVER! ", e);
         } finally {
             if (authService != null) {
                 authService.stop();

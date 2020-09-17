@@ -73,8 +73,9 @@ public class Controller {
                             logFile.seek(startPosition);
                             String s;
                             while ((s = logFile.readLine()) != null) {
-                                mainTextArea.appendText(s);
-                                mainTextArea.appendText("\n");
+                                String currentString = s;
+                                javafx.application.Platform.runLater( ()
+                                        -> mainTextArea.appendText(currentString + "\n") );
                             }
                             break;
                         }
@@ -156,6 +157,7 @@ public class Controller {
                     logFile.writeUTF(messageTextForSelf);
                 }
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         messageTextField.clear();

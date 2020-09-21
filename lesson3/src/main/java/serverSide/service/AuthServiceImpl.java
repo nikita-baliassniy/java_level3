@@ -2,6 +2,8 @@ package serverSide.service;
 
 import dataBaseController.User;
 import dataBaseController.dao.UsersDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import serverSide.interfaces.AuthService;
 
 import java.sql.SQLException;
@@ -12,6 +14,7 @@ public class AuthServiceImpl implements AuthService {
 
     private List<User> userList;
     private static UsersDAO usersController;
+    public static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
 
     public AuthServiceImpl() {
         userList = new LinkedList<>();
@@ -20,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void start() {
-        System.out.println("Сервис аутентификации запущен");
+        LOGGER.info("AUTHENTICATION SERVICE IS UP NOW");
     }
 
     @Override
@@ -62,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void stop() {
-        System.out.println("Сервис аутентификации остановлен");
+        LOGGER.info("AUTHENTICATION SERVICE IS OFF NOW");
     }
 
 }

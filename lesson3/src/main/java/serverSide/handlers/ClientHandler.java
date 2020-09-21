@@ -1,21 +1,28 @@
 package serverSide.handlers;
 
 import dataBaseController.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import serverSide.interfaces.Server;
+import serverSide.service.ServerImpl;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientHandler {
 
     private Server server;
     private Socket socket;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private volatile DataInputStream dis;
+    private volatile DataOutputStream dos;
     private volatile boolean isIdle = false;
     private String nick;
+    public static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public String getNick() {
         return nick;
@@ -38,12 +45,12 @@ public class ClientHandler {
                 }
             }).start();
         } catch (IOException e) {
-            throw new RuntimeException("Проблемы при создании обработчика клиента");
+            LOGGER.error("ERROR WHILE CREATING CLIENT HANDLER");
+            throw new RuntimeException();
         }
     }
 
     private void authentication() {
-
         // Поток контроля, что пользователь авторизуется за заданное время
         Thread authorityControlThread = new Thread(() -> {
             try {
@@ -55,9 +62,10 @@ public class ClientHandler {
                 sendMsg("You were disconnected due the idleness\n");
                 isIdle = true;
             }
+
         });
         authorityControlThread.setDaemon(true);
-        authorityControlThread.start();
+        executorService.execute(authorityControlThread);
 
         while (true) {
             try {
@@ -89,20 +97,21 @@ public class ClientHandler {
             } catch (Exception e) {
             }
         }
+
     }
 
     public void sendMsg(String msg) {
         try {
             dos.writeUTF(msg);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("ERROR WHILE SENDING MESSAGE", e);
         }
     }
 
     public void readMessage() throws IOException {
         while (true) {
             String clientStr = dis.readUTF();
-            System.out.println("from " + this.nick + ":" + clientStr);
+            LOGGER.info("from " + this.nick + ":" + clientStr);
             if (clientStr.contains("/exit")) { // Ветка выхода
                 return;
             }
@@ -123,6 +132,7 @@ public class ClientHandler {
                         if (result) {
                             sendMsg("Your nick is " + currentNick);
                             server.broadcastMsg(currentNick + " now is known as " + newNick);
+                            LOGGER.info(currentNick + " now is known as " + newNick);
                             server.updateClientNick(currentNick, newNick);
                         } else {
                             sendMsg("There was an error while changing your nick");
@@ -145,18 +155,19 @@ public class ClientHandler {
         try {
             dis.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("ERROR WHILE CLOSING INPUT STREAM", e);
         }
         try {
             dos.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("ERROR WHILE CLOSING OUTPUT STREAM", e);
         }
         try {
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("ERROR WHILE CLOSING SOCKET", e);
         }
+        executorService.shutdown();
     }
 
     public void setNick(String nick) {
